@@ -22,7 +22,6 @@
   "homepage": "https://github.com/pkout/mongoose-fixture-generator#readme",
   "dependencies": {
     "faker": "^4.1.0",
-    "lodash": "^4.17.11",
-    "mongoose": "^5.3.0"
+    "lodash": "^4.17.11"
   }
 }
