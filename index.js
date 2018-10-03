@@ -43,7 +43,7 @@ function _forCountFixtures(count, modelCreatorFn) {
 }
 
 function _isFakerCode(str) {
-  return str.startsWith('fake:');
+  return str && str.startsWith('fake:');
 }
 
 function _extractFakerCode(str) {
