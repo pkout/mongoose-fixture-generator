@@ -12,7 +12,7 @@ fns.create = function(modelName, count, customData) {
   _customizeFixtureData(data, customData);
   console.log('Fixtures generated');
 
-  return count == 1 ? data[0] : data;
+  return count === 1 ? data[0] : data;
 }
 
 function _createFixture(modelName) {
@@ -70,7 +70,7 @@ fns.createAndSave = function(modelName, count, customData) {
   return mongoose.models[modelName].insertMany(data)
     .then((docs) => {
       console.log('Fixtures saved');
-      return docs
+      return count === 1 ? docs[0] : docs;
     })
 }
 
