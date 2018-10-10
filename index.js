@@ -24,18 +24,38 @@ function _createFixture(modelName) {
 function _buildFixtureFromModel(model) {
   let fixture = { id: faker.random.uuid() };
 
-  Object.keys(model.schema.obj).forEach((key) => {
-    const fakeVal = model.schema.obj[key].fake;
+  _buildFixtureForModelProps(model.schema, 'obj', fixture);
+
+  return fixture;
+}
+
+function _buildFixtureForModelProps(schema, propPath, fixture) {
+  Object.keys(_.get(schema, propPath)).forEach((name) => {
+    const nestedPropPath = `${propPath}.${name}`;
+
+    if (_isNestedSchemaProp(schema, nestedPropPath)) {
+      return _buildFixtureForModelProps(schema, nestedPropPath, fixture);
+    }
+    const fakeVal = _.get(schema, nestedPropPath).fake;
+    let fakedVal;
 
     if (_isFakerCode(fakeVal)) {
       const fakerCode = _extractFakerCode(fakeVal);
-      fixture[key] = _createFake(fakerCode);
+      fakedVal = _createFake(fakerCode);
     } else {
-      fixture[key] = fakeVal;
+      fakedVal = fakeVal;
     }
+    _.set(fixture, _convertToFixturePropPath(nestedPropPath), fakedVal);
   });
+}
 
-  return fixture;
+function _convertToFixturePropPath(propPath) {
+  return propPath.substring(4);
+}
+
+function _isNestedSchemaProp(schema, propName) {
+  return !Array.isArray(_.get(schema, propName))
+    && _.get(schema, propName).fake === undefined
 }
 
 function _forCountFixtures(count, modelCreatorFn) {
