@@ -22,7 +22,7 @@ function _createFixture(modelName) {
 }
 
 function _buildFixtureFromModel(model) {
-  let fixture = { id: faker.random.uuid() };
+  let fixture = { id: randomHex(24) };
 
   _buildFixtureForModelProps(model.schema, 'obj', fixture);
 
@@ -71,6 +71,10 @@ function _extractFakerCode(str) {
 }
 
 function _createFake(fakerCode) {
+  if (fakerCode === 'random.mongoId') {
+    return randomHex(24);
+  }
+
   return faker.fake('{{' + fakerCode + '}}')
 }
 
@@ -100,6 +104,18 @@ fns.purge = function(modelName) {
       console.log('Fixtures purged');
       return;
     });
+}
+
+function randomHex(len) {
+  let maxlen = 8,
+      min = Math.pow(16,Math.min(len,maxlen) - 1)
+      max = Math.pow(16,Math.min(len,maxlen)) - 1,
+      n   = Math.floor(Math.random() * (max - min + 1)) + min,
+      r   = n.toString(16);
+  while ( r.length < len ) {
+     r = r + randomHex(len - maxlen);
+  }
+  return r;
 }
 
 module.exports = fns;
