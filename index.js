@@ -22,7 +22,8 @@ function _createFixture(modelName) {
 }
 
 function _buildFixtureFromModel(model) {
-  let fixture = { id: randomHex(24) };
+  // let fixture = { _id: mongoose.Types.ObjectId() };
+  let fixture = { };
 
   _buildFixtureForModelProps(model.schema, 'obj', fixture);
 
