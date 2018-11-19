@@ -55,7 +55,8 @@ function _convertToFixturePropPath(propPath) {
 }
 
 function _isNestedSchemaProp(schema, propName) {
-  return !Array.isArray(_.get(schema, propName))
+  return !Array.isArray(_.get(schema, propName)) 
+    && schema.obj === undefined
     && _.get(schema, propName).fake === undefined
 }
 
