@@ -37,7 +37,7 @@ function _buildFixtureForModelProps(schema, propPath, fixture) {
     if (_isNestedSchemaProp(schema, nestedPropPath)) {
       return _buildFixtureForModelProps(schema, nestedPropPath, fixture);
     }
-    const fakeVal = _.get(schema, nestedPropPath).fake;
+    const fakeVal = _getFakeVal(schema, nestedPropPath);
     let fakedVal;
 
     if (_isFakerCode(fakeVal)) {
@@ -46,8 +46,23 @@ function _buildFixtureForModelProps(schema, propPath, fixture) {
     } else {
       fakedVal = fakeVal;
     }
+
+    if (_isNestedPropPathArray(schema, nestedPropPath) && 
+        fakedVal !== undefined) {
+      fakedVal = [fakedVal];
+    }
     _.set(fixture, _convertToFixturePropPath(nestedPropPath), fakedVal);
   });
+}
+
+function _getFakeVal(schema, nestedPropPath) {
+  return _isNestedPropPathArray(schema, nestedPropPath) ?
+    _.get(schema, nestedPropPath)[0].fake :
+    _.get(schema, nestedPropPath).fake;
+}
+
+function _isNestedPropPathArray(schema, nestedPropPath) {
+  return Array.isArray(_.get(schema, nestedPropPath));
 }
 
 function _convertToFixturePropPath(propPath) {
